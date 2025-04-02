@@ -14,7 +14,7 @@ builder.Services.AddScoped<IUserAccessorService, UserAccessorService>();
 builder.Services.AddScoped<IDBConnectionFactory, DBConnectionFactory>();
 
 var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
-builder.Services.AddSingleton(_ => appSettings);
+builder.Services.AddSingleton<AppSettings>(_ => appSettings);
 
 var app = builder.Build();
 
@@ -38,3 +38,6 @@ app.MapPatch("/accounts/{id}/subscriptions/{subscriptionId}/expiration", (HttpCo
 app.MapDelete("/accounts/{id}/subscriptions/{subscriptionId}", (HttpContext ctx) => null).WithName("CancelSubscription");
 
 app.Run();
+
+
+public partial class Program{}
