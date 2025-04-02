@@ -7,6 +7,8 @@ dodati exception handling
 dodati apiclient
 implementirati queue
 
+* dodati mock http za inventar
+
 dodati caching
 konfigurisati redis da salje remove notifikacije
 

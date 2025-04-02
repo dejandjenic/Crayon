@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http.Json;
+using Crayon.ApiClients.CCPClient;
 using Crayon.Configuration;
 using Crayon.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -46,5 +47,10 @@ public class RestHelper : IDisposable
     public async Task<(HttpStatusCode,List<Licence>)> Licences(string id,string subscriptionid)
     {
         return await GetResult<List<Licence>>($"/accounts/{id}/subscriptions/{subscriptionid}/licences");
+    }
+    
+    public async Task<(HttpStatusCode,List<InventoryItem>)> Inventory()
+    {
+        return await GetResult<List<InventoryItem>>("/inventory");
     }
 }

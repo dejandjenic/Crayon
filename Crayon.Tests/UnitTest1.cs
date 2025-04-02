@@ -10,6 +10,17 @@ public class UnitTest1 : TestBase
     {
         using var helper = new RestHelper(AdjustSettings);
 
+        var (_,inventory) = await helper.Inventory();
+        
+        inventory.Count.Should().Be(2);
+        
+        inventory.FirstOrDefault().Id.Should().Be(Guid.Parse("69048a5a-fb5f-4a65-b209-557c5ce4cbf7"));
+        inventory.FirstOrDefault().Name.Should().Be("Microsoft Office");
+        
+        inventory.Skip(1).FirstOrDefault().Id.Should().Be(Guid.Parse("a2bca648-d138-4072-b8c9-ccbcfd86df96"));
+        inventory.Skip(1).FirstOrDefault().Name.Should().Be("Microsoft SQL Server");
+
+        
         var (_,accounts) = await helper.Accounts();
 
         accounts.Count.Should().Be(2);
