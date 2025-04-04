@@ -4,8 +4,8 @@
 dodati validaciju
 dodati exception handling
 
-dodati apiclient
-implementirati queue
+* dodati apiclient
+* implementirati queue
 
 * dodati mock http za inventar
 
@@ -16,7 +16,7 @@ dodati open telemetry
 
 * dodati testove
 * dodati testcontainers
-popraviti test coverage
+* popraviti test coverage
 
 implementirati restrikcije naloga (account je od customera, subscription je od accounta i customera)
 implementirati notfound exception
