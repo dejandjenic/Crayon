@@ -1,4 +1,5 @@
 using Crayon.ApiClients.CCPClient;
+using Crayon.ApiClients.CCPClient.Model;
 
 namespace Crayon.Services;
 

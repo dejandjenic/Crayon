@@ -1,5 +1,7 @@
 using System.Text.Json;
 using Crayon.ApiClients.CCPClient;
+using Crayon.ApiClients.CCPClient.Model;
+using Crayon.Endpoints.Model;
 using WireMock.RequestBuilders;
 using WireMock.Server;
 using WireMock.ResponseBuilders;
@@ -15,18 +17,6 @@ public class MockServer
         {
             settings.Port = 7777;
         });
-        
-        // Catch-all case
-        server
-            .Given(Request.Create().WithPath("/api/*"))
-            .AtPriority(100)
-            .RespondWith(Response.Create().WithStatusCode(401));
-
-        // Specific case
-        server
-            .Given(Request.Create().WithPath("/api/specific-resource"))
-            .AtPriority(1)
-            .RespondWith(Response.Create().WithStatusCode(200));
         
         server
             .Given(Request.Create().WithPath("/inventory"))
@@ -87,9 +77,5 @@ public class MockServer
             .AtPriority(1)
             .RespondWith(Response.Create().WithStatusCode(200));
 
-        // Response.Create().WithStatusCode(200).WithBodyAsJson(async (m) =>
-        // {
-        //     return new { };
-        // });
     }
 }

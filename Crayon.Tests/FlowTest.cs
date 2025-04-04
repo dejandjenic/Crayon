@@ -1,8 +1,8 @@
 using System.Net;
 using Crayon.ApiClients.CCPClient;
+using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Repositories;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 using TestProject1.Helpers;
 
 namespace TestProject1;

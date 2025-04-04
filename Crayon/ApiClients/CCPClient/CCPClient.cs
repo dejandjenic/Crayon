@@ -1,3 +1,5 @@
+using Crayon.ApiClients.CCPClient.Model;
+
 namespace Crayon.ApiClients.CCPClient;
 
 public interface ICCPClient
@@ -26,8 +28,7 @@ public class CCPClient(HttpClient client) : ICCPClient
         });
         res.EnsureSuccessStatusCode();
 
-        var responseObject = await res.Content.ReadFromJsonAsync<PurchaseResponse>();
-        return responseObject;
+        return await res.Content.ReadFromJsonAsync<PurchaseResponse>();
     }
     
     public async Task<ChangeQuantityResponse> ChangeQuantity(Guid id, int quantity)
@@ -38,8 +39,7 @@ public class CCPClient(HttpClient client) : ICCPClient
         });
         res.EnsureSuccessStatusCode();
 
-        var responseObject = await res.Content.ReadFromJsonAsync<ChangeQuantityResponse>();
-        return responseObject;
+        return await res.Content.ReadFromJsonAsync<ChangeQuantityResponse>();
     }
     
     public async Task ChangeExpiration(Guid id, DateTime expires)
@@ -56,39 +56,4 @@ public class CCPClient(HttpClient client) : ICCPClient
         var res = await client.DeleteAsync($"/subscriptions/{id}");
         res.EnsureSuccessStatusCode();
     }
-}
-
-public class ChangeQuantityRequest
-{
-    public int Quantity { get; set; }
-}
-
-public class ChangeExpirationRequest
-{
-    public DateTime Expires { get; set; }
-}
-
-public class ChangeQuantityResponse
-{
-    public List<Guid> Licences { get; set; }
-}
-
-
-
-public class PurchaseResponse
-{
-    public DateTime Expires { get; set; }
-    public List<Guid> Licences { get; set; }
-}
-public class PurchaseRequest
-{
-    public Guid ItemId { get; set; }
-    public Guid ExternalAccountId { get; set; }
-    public int Quantity { get; set; }
-}
-
-public class InventoryItem
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
 }

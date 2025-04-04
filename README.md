@@ -1,7 +1,7 @@
 # Crayon
 
 
-dodati validaciju
+* dodati validaciju
 dodati exception handling
 
 * dodati apiclient
@@ -17,9 +17,12 @@ dodati open telemetry
 * dodati testove
 * dodati testcontainers
 * popraviti test coverage
+testovi za svaki endpoint
 
 implementirati restrikcije naloga (account je od customera, subscription je od accounta i customera)
 implementirati notfound exception
 
+adresa za httpclient u konfig
 
 refactor publisher registration
+refactor program.cs

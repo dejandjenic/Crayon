@@ -8,8 +8,11 @@
 
     <ItemGroup>
         <PackageReference Include="Dapper" Version="2.1.66" />
+        <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
+<!--        <PackageReference Include="FluentValidation" Version="11.4.0" />-->
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
         <PackageReference Include="MySqlConnector" Version="2.4.0" />
+        <PackageReference Include="O9d.AspNet.FluentValidation" Version="0.1.1" />
         <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
         <PackageReference Include="WireMock.Net" Version="1.8.0-prview-01" />
     </ItemGroup>

@@ -1,7 +1,9 @@
 using System.Net;
 using System.Net.Http.Json;
 using Crayon.ApiClients.CCPClient;
+using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Configuration;
+using Crayon.Endpoints.Model;
 using Crayon.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
