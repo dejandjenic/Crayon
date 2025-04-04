@@ -1,3 +1,5 @@
+using Crayon.Exceptions;
+
 namespace Crayon.Services;
 
 public interface IUserAccessorService

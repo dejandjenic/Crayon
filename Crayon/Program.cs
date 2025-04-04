@@ -1,6 +1,7 @@
 using Crayon.Configuration;
 using Crayon.Endpoints;
 using Crayon.Helpers;
+using Crayon.Middleware;
 using Crayon.Mock;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +20,7 @@ app.UseHttpsRedirection();
 app.RegisterEndpoints();
 
 MockServer.Start();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();
 
