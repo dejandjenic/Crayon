@@ -7,8 +7,6 @@ namespace Crayon.Repositories;
 public interface IAccountRepository
 {
     Task<List<Account>> GetAccounts(Guid idCustomer);
-    Task<List<Subscription>> GetSubscriptions(Guid idAccount);
-    Task<List<Licence>> GetLicences(Guid idSubscription);
 }
 public class AccountRepository(IDBConnectionFactory connectionFactory) : IAccountRepository
 {
@@ -17,20 +15,6 @@ public class AccountRepository(IDBConnectionFactory connectionFactory) : IAccoun
         using var connection = connectionFactory.GetConnection();
         
         return (await connection.QueryAsync<Account>("select * from Account where IDCustomer = @idCustomer", new { idCustomer })).ToList();
-    }
-
-    public async Task<List<Subscription>> GetSubscriptions(Guid idAccount)
-    {
-        using var connection = connectionFactory.GetConnection();
-        
-        return (await connection.QueryAsync<Subscription>("select * from Subscription where IDAccount = @idAccount", new { idAccount })).ToList();
-    }
-
-    public async Task<List<Licence>> GetLicences(Guid idSubscription)
-    {
-        using var connection = connectionFactory.GetConnection();
-        
-        return (await connection.QueryAsync<Licence>("select * from Licence where IDSubscription = @idSubscription", new { idSubscription })).ToList();
     }
 }
 
@@ -44,6 +28,8 @@ public class Subscription
 {
     public Guid Id { get; set; }
     public string Name { get; set; }
+    public string Status { get; set; }
+    public DateTime Expires { get; set; }
 }
 
 public class Licence

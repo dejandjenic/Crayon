@@ -15,11 +15,16 @@ create table Account
 
 create table Subscription
 (
-    ID   uuid not null primary key default uuid(),
-    Name nvarchar(50) not null,
-    IDAccount uuid not null,
-    CONSTRAINT `FK_Account`
-        FOREIGN KEY (IDAccount) REFERENCES Account (ID)
+    ID          uuid                                          default uuid()              not null
+        primary key,
+    Name        varchar(50) charset utf8mb3                                               not null,
+    IDAccount   uuid                                                                      not null,
+    DateCreated datetime                                      default current_timestamp() not null,
+    ExternalId  uuid                                                                      not null,
+    Status      enum ('Created', 'Error', 'Active', 'Processing','Cancelled') default 'Created'           null,
+    Expires     datetime                                                                  null,
+    constraint FK_Account
+        foreign key (IDAccount) references Account (ID)
 );
 
 

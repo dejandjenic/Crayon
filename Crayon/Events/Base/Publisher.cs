@@ -4,14 +4,27 @@ using RabbitMQ.Client;
 
 namespace Crayon.Events.Base;
 
-public interface IPublisher
+public interface IPublisher<T>:IPublisherSetup
 {
     Task Start();
-    Task Publish<T>(T data);
+    Task Publish(T data);
 }
 
+public interface IPublisherSetup
+{
+    
+}
 
-public class Publisher<T>(ConnectionFactory factory) : IPublisher
+public class PublisherFactory
+{
+    // public T Create<T>(ConnectionFactory factory)
+    // where T : Publisher<object>
+    // {
+    //     new 
+    // }
+}
+
+public class Publisher<T>(ConnectionFactory factory) : IPublisher<T>
 {
     private IConnection connection;
     private IChannel channel;
@@ -27,7 +40,7 @@ public class Publisher<T>(ConnectionFactory factory) : IPublisher
         await channel.ExchangeDeclareAsync(exchange: Topic, type: ExchangeType.Topic);
     }
     
-    public async Task Publish<T>(T data)
+    public async Task Publish(T data)
     {
         var message = JsonSerializer.Serialize(data);
         var body = Encoding.UTF8.GetBytes(message);

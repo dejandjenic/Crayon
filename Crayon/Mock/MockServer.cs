@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Crayon.ApiClients.CCPClient;
 using WireMock.RequestBuilders;
 using WireMock.Server;
@@ -45,5 +46,50 @@ public class MockServer
                     }
                 }
                 ));
+        
+        
+        server
+            .Given(Request.Create().WithPath("/subscriptions").UsingPost())
+            .AtPriority(1)
+            .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(async (m) =>
+                {
+                    var quantity = JsonSerializer.Deserialize<PurchaseRequest>(m.Body,
+                        new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).Quantity;
+                    return new
+                    {
+                        Expires = DateTime.UtcNow.AddYears(1),
+                        Licences = Enumerable.Range(1, quantity).Select(x => Guid.NewGuid()).ToList()
+                    };
+                }
+            ));
+        
+        server
+            .Given(Request.Create().WithPath("/subscriptions/*").UsingDelete())
+            .AtPriority(1)
+            .RespondWith(Response.Create().WithStatusCode(200));
+        
+        server
+            .Given(Request.Create().WithPath("/subscriptions/*/quantity").UsingPatch())
+            .AtPriority(1)
+            .RespondWith(Response.Create().WithStatusCode(200).WithBodyAsJson(async (m) =>
+                {
+                    var quantity = JsonSerializer.Deserialize<SubscriptionChangeQuantityRequest>(m.Body,
+                        new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }).Quantity;
+                    return new
+                    {
+                        Licences = Enumerable.Range(1, quantity).Select(x => Guid.NewGuid()).ToList()
+                    };
+                }
+            ));
+        
+        server
+            .Given(Request.Create().WithPath("/subscriptions/*/expiration").UsingPatch())
+            .AtPriority(1)
+            .RespondWith(Response.Create().WithStatusCode(200));
+
+        // Response.Create().WithStatusCode(200).WithBodyAsJson(async (m) =>
+        // {
+        //     return new { };
+        // });
     }
 }

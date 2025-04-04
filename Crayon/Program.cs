@@ -16,7 +16,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
 builder.Services.AddScoped<IUserAccessorService, UserAccessorService>();
 builder.Services.AddScoped<IDBConnectionFactory, DBConnectionFactory>();
 builder.Services.AddScoped<ICCPService, CCPService>();
@@ -33,15 +35,68 @@ builder.Services.AddSingleton<ConnectionFactory>(_ => new ConnectionFactory()
     HostName = appSettings.PublisherConfiguration.HostName
 });
 
-builder.Services.AddSingleton<IPublisher,TempPublisher>();
-builder.Services.AddSingleton<ISubscriber, TempHandler>();
+builder.Services.AddSingleton<OrderPublisher>( sp =>
+{
+    var svc = new OrderPublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, OrderHandler>();
+builder.Services.AddSingleton<OrderPurchasePublisher>( sp =>
+{
+    var svc = new OrderPurchasePublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, OrderPurchaseHandler>();
+builder.Services.AddSingleton<ChangeSubscriptionQuantityPublisher>( sp =>
+{
+    var svc = new ChangeSubscriptionQuantityPublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, ChangeSubscriptionQuantityHandler>();
+builder.Services.AddSingleton<ChangeSubscriptionQuantityFinalizePublisher>( sp =>
+{
+    var svc = new ChangeSubscriptionQuantityFinalizePublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, ChangeSubscriptionQuantityFinalizeHandler>();
+
+builder.Services.AddSingleton<ChangeSubscriptionExpirationPublisher>( sp =>
+{
+    var svc = new ChangeSubscriptionExpirationPublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, ChangeSubscriptionExpirationHandler>();
+builder.Services.AddSingleton<ChangeSubscriptionExpirationFinalizePublisher>( sp =>
+{
+    var svc = new ChangeSubscriptionExpirationFinalizePublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, ChangeSubscriptionExpirationFinalizeHandler>();
+
+
+builder.Services.AddSingleton<CancelSubscriptionPublisher>( sp =>
+{
+    var svc = new CancelSubscriptionPublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, CancelSubscriptionHandler>();
+
+builder.Services.AddSingleton<CancelSubscriptionFinalizePublisher>( sp =>
+{
+    var svc = new CancelSubscriptionFinalizePublisher(sp.GetRequiredService<ConnectionFactory>());
+    svc.Start().GetAwaiter().GetResult();
+    return svc;
+});
+builder.Services.AddSingleton<ISubscriber, CancelSubscriptionFinalizeHandler>();
 
 var app = builder.Build();
-
-var publishers = app.Services.GetRequiredService<IEnumerable<IPublisher>>();
-foreach(var publisher in publishers){
-    await publisher.Start();
-}
 
 var subscribers = app.Services.GetRequiredService<IEnumerable<ISubscriber>>();
 foreach (var subscriber in subscribers)
@@ -57,23 +112,58 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapGet("/accounts", async (IAccountService service,IUserAccessorService userAccessorService) => await service.GetAccounts(await userAccessorService.CurrentCustomer())).WithName("Accounts");
-app.MapGet("/accounts/{id}/subscriptions", async (Guid id,IAccountService service,IUserAccessorService userAccessorService) => await service.GetSubscriptions(id)).WithName("AccountSubscriptions");
-app.MapGet("/accounts/{id}/subscriptions/{subscriptionId}/licences", async (Guid id, Guid subscriptionId,IAccountService service,IUserAccessorService userAccessorService) => await service.GetLicences(subscriptionId)).WithName("SubscriptionLicences");
+app.MapGet("/accounts/{id}/subscriptions", async (Guid id,ISubscriptionService service,IUserAccessorService userAccessorService) => await service.GetSubscriptions(id)).WithName("AccountSubscriptions");
+app.MapGet("/accounts/{id}/subscriptions/{subscriptionId}/licences", async (Guid id, Guid subscriptionId,ISubscriptionService service,IUserAccessorService userAccessorService) => await service.GetLicences(subscriptionId)).WithName("SubscriptionLicences");
 app.MapGet("/inventory", async (ICCPService service) => await service.GetInventory()).WithName("AvailableInventory");
-app.MapPost("/accounts/{id}/subscriptions", async (IAccountService service, IUserAccessorService userAccessorService,IPublisher publisher) =>
+app.MapPost("/accounts/{id}/subscriptions", async (ISubscriptionService service, IUserAccessorService userAccessorService,Guid id,SubscriptionOrderRequest request) =>
 {
-    await publisher.Publish(new TempMessage()
+    var subscriptionId = await service.Order(await userAccessorService.CurrentCustomer(),id,request.Id,request.Quantity);
+    return Results.Created($"/accounts/{id}/subscriptions/{subscriptionId}", new SubscriptionOrderResponse
     {
-        Id = Guid.NewGuid().ToString()
+        Id = subscriptionId
     });
 }).WithName("OrderSubscription");
-app.MapPatch("/accounts/{id}/subscriptions/{subscriptionId}/quantity", (HttpContext ctx) => null).WithName("UpdateSubscriptionQuantity");
-app.MapPatch("/accounts/{id}/subscriptions/{subscriptionId}/expiration", (HttpContext ctx) => null).WithName("UpdateSubscriptionExpiration");
-app.MapDelete("/accounts/{id}/subscriptions/{subscriptionId}", (HttpContext ctx) => null).WithName("CancelSubscription");
+app.MapPatch("/accounts/{id}/subscriptions/{subscriptionId}/quantity", async (ISubscriptionService service,SubscriptionChangeQuantityRequest request,Guid subscriptionId) =>
+{
+    await service.ChangeQuantity(subscriptionId, request.Quantity);
+    return Results.Accepted();
+}).WithName("UpdateSubscriptionQuantity");
+app.MapPatch("/accounts/{id}/subscriptions/{subscriptionId}/expiration", 
+    async (ISubscriptionService service,Guid subscriptionId,SubscriptionChangeExpirationRequest request) =>
+{
+    await service.SetExpiration(subscriptionId,request.Expires);
+    return Results.Accepted();
+}).WithName("UpdateSubscriptionExpiration");
+app.MapDelete("/accounts/{id}/subscriptions/{subscriptionId}",
+    async (ISubscriptionService service, Guid subscriptionId) =>
+    {
+        await service.CancelSubscription(subscriptionId);
+        return Results.Accepted();
+    }).WithName("CancelSubscription");
 
 MockServer.Start();
 
 app.Run();
 
-
 public partial class Program{}
+
+public class SubscriptionOrderRequest
+{
+    public Guid Id { get; set; }
+    public int Quantity { get; set; }
+}
+
+public class SubscriptionChangeQuantityRequest
+{
+    public int Quantity { get; set; }
+}
+
+public class SubscriptionChangeExpirationRequest
+{
+    public DateTime Expires { get; set; }
+}
+
+public class SubscriptionOrderResponse
+{
+    public Guid Id { get; set; }
+}

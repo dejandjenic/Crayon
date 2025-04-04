@@ -20,3 +20,6 @@ popraviti test coverage
 
 implementirati restrikcije naloga (account je od customera, subscription je od accounta i customera)
 implementirati notfound exception
+
+
+refactor publisher registration
