@@ -2,7 +2,20 @@
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingSourceSnapshotLocation/@EntryValue">/home/dejan/.cache/JetBrains/Rider2024.1/resharper-host/temp/Rider/vAny/CoverageData/_Crayon.-1808162085/Snapshot/snapshot.utdcvr</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=0eb5dc2e_002D82b5_002D4085_002Db42b_002D97331a1c5b8d/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="Test" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;
   &lt;TestAncestor&gt;
-    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::TestProject1.FlowTest.Test&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.AccountsTests.Should_Be_Authorized&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.AccountsTests.Should_Return_Accounts&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.FlowTest.Test&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.SubscriptionsTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.SubscriptionsListTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.AccountsTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.FlowTest&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.SubscriptionLicencesListTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.CreateSubscriptionTests.Should_Be_Authenticated&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.CreateSubscriptionTests.Should_Be_Authorized&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.CreateSubscriptionTests.Should_Handle_Invalid_Input&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.ChangeQuantitySubscriptionTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.ChangeExpirationSubscriptionTests&lt;/TestId&gt;
+    &lt;TestId&gt;xUnit::5FF60681-A5FA-4DC5-8761-5854EB4BCF59::net9.0::Crayon.Tests.FunctionalTests.CancelSubscriptionTests&lt;/TestId&gt;
   &lt;/TestAncestor&gt;
 &lt;/SessionState&gt;</s:String>
 	</wpf:ResourceDictionary>

@@ -1,36 +1,74 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using Crayon.ApiClients.CCPClient;
 using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Configuration;
 using Crayon.Endpoints.Model;
 using Crayon.Repositories;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace TestProject1;
+namespace Crayon.Tests.Helpers;
 
+public class SafePortGenerator
+{
+    public static object lockObject = new();
+    public static List<int> ports = new();
+    public static int Generate()
+    {
+        int port = new Random().Next(7001, 7770);
+        lock (lockObject)
+        {
+            while (ports.Contains(port))
+            {
+                port = new Random().Next(7001, 7770);
+            }
+            ports.Add(port);
+        }
+
+        return port;
+    }
+}
 public class RestHelper : IDisposable
 {
     private HttpClient client;
+    private string token;
+    private CustomWebApplicationFactory<Program> factory;
+    private int wiremockport = 0;
     
-    public RestHelper(Func<AppSettings,AppSettings> settings)
+    public RestHelper(Func<AppSettings,AppSettings> settings,TestJWTLibrary.Generator generator)
     {
-        var f = new CustomWebApplicationFactory<Program>((services) =>
+        wiremockport = SafePortGenerator.Generate();
+        factory = new CustomWebApplicationFactory<Program>((services) =>
         {
             var existing = services.BuildServiceProvider().GetRequiredService<AppSettings>();
-            services.AddSingleton(sp => settings(existing));
-        });
-        client = f.CreateClient();
+            var newSettings = settings(existing);
+            newSettings.CCPBaseAddress = $"http://localhost:{wiremockport}";
+            newSettings.WiremockPort = wiremockport;
+            services.AddSingleton(sp => newSettings);
+        },generator);
+        
+        client = factory.CreateClient();
     }
 
     public void Dispose()
     {
         client.Dispose();
+        factory.Dispose();
     }
 
+
+    public void Authorize(string token)
+    {
+        this.token = token;
+    }
     async Task<(HttpStatusCode, T)> GetResult<T>(string url,HttpMethod method,object body = null)
     {
         var message = new HttpRequestMessage(method, url);
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
         if (body != null)
         {
             message.Content = JsonContent.Create(body);
@@ -39,17 +77,16 @@ public class RestHelper : IDisposable
         if (!res.IsSuccessStatusCode)
             return (res.StatusCode, default);
 
-        // if (res.StatusCode == HttpStatusCode.Accepted || res.StatusCode == HttpStatusCode.Created)
-        // {
-        //     return (res.StatusCode, default);
-        // }
-        
         return (res.StatusCode, await res.Content.ReadFromJsonAsync<T>());
     }
     
     async Task<HttpStatusCode> GetResult(string url,HttpMethod method,object body = null)
     {
         var message = new HttpRequestMessage(method, url);
+        if (!string.IsNullOrWhiteSpace(token))
+        {
+            message.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
         if (body != null)
         {
             message.Content = JsonContent.Create(body);

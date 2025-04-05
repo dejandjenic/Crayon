@@ -14,6 +14,13 @@ public static class ServiceExtensions
 {
     public static void RegisterServices(this IServiceCollection services, AppSettings appSettings)
     {
+        
+        //services.AddAuthentication();
+        services.AddAuthorization();
+
+        services.AddAuthentication("Bearer").AddJwtBearer();
+        services.AddHttpContextAccessor();
+        
         services.AddOpenApi();
 
         services.AddScoped<IAccountService, AccountService>();
@@ -23,10 +30,11 @@ public static class ServiceExtensions
         services.AddScoped<IUserAccessorService, UserAccessorService>();
         services.AddScoped<IDBConnectionFactory, DBConnectionFactory>();
         services.AddScoped<ICCPService, CCPService>();
+        services.AddScoped<IAuthorizationService, AuthorizationService>();
 
         services.AddHttpClient<ICCPClient, CCPClient>((client) =>
         {
-            client.BaseAddress = new Uri("http://localhost:7777/");
+            client.BaseAddress = new Uri(appSettings.CCPBaseAddress);
         });
 
 

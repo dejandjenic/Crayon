@@ -1,5 +1,6 @@
 using Crayon.Events.Handlers;
 using Crayon.Events.Publishers;
+using Crayon.Exceptions;
 using Crayon.Repositories;
 
 namespace Crayon.Services;

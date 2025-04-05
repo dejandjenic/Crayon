@@ -1,14 +1,29 @@
 using System.Net;
-using Crayon.ApiClients.CCPClient;
+using System.Security.Claims;
 using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Repositories;
+using Crayon.Tests.Helpers;
 using FluentAssertions;
+using TestProject1;
 using TestProject1.Helpers;
 
-namespace TestProject1;
-
-public class FlowTest : TestBase
+namespace Crayon.Tests.FunctionalTests;
+[Collection("Database collection")]
+public class FlowTest : IClassFixture<TestRunFixture>
 {
+    private TestJWTLibrary.Generator generator = new();
+    private readonly ContainerFixture _testbase;
+    private TestRunFixture _run;
+
+    public FlowTest(ContainerFixture testbase,TestRunFixture run)
+    {
+        _testbase = testbase;
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),run.Id);
+        _run = run;
+        _run.MainConnectionString = _testbase.GetConnectionString("db");
+    }
+
+    
     [Fact]
     async Task Test()
     {
@@ -21,7 +36,9 @@ public class FlowTest : TestBase
 
         string ACTIVE = "Active";
         
-        using var helper = new RestHelper(AdjustSettings);
+        using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
+        
+        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim("customer_id","8debd754-286d-4944-8fb5-1a48440f3848")));
 
         var (_,inventory) = await helper.Inventory();
         
@@ -96,7 +113,7 @@ public class FlowTest : TestBase
         var (_,subscriptionsCancel) = await helper.Subscriptions(firstAccountId);
         ValidateSubscription(subscriptionsCancel.First(),response.Id,officeName,"Cancelled",expDate);
 
-        await StopAllContainers();
+        //await StopAllContainers();
     }
 
     private void ValidateLicences(List<Licence> licences)

@@ -13,6 +13,6 @@ public class SubscriptionOrderRequestValidator : AbstractValidator<SubscriptionO
     public SubscriptionOrderRequestValidator()
     {
         RuleFor(x => x.Id).NotEmpty();
-        RuleFor(x => x.Quantity).NotEmpty();
+        RuleFor(x => x.Quantity).NotEmpty().GreaterThan(0);
     }
 }

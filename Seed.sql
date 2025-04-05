@@ -1,4 +1,5 @@
 insert into Customer(id,name) values('8debd754-286d-4944-8fb5-1a48440f3848','Test');
+insert into Customer(id,name) values('7debd754-286d-4944-8fb5-1a48440f3848','Test2');
 insert into Account(id,IDCustomer,name) values('be386f83-0f8e-11f0-95c6-34f39a52020b','8debd754-286d-4944-8fb5-1a48440f3848','Department1');
 insert into Account(id,IDCustomer,name) values('de386f83-0f8e-11f0-95c6-34f39a52020b','8debd754-286d-4944-8fb5-1a48440f3848','Department2');
 

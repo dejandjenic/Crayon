@@ -1,12 +1,10 @@
-using System.Data.Common;
-using Crayon.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace TestProject1;
+namespace Crayon.Tests;
 
-public class CustomWebApplicationFactory<TProgram>(Action<IServiceCollection> servicesOverrides)
+public class CustomWebApplicationFactory<TProgram>(Action<IServiceCollection> servicesOverrides,TestJWTLibrary.Generator generator)
     : WebApplicationFactory<TProgram>
     where TProgram : class
 {
@@ -17,7 +15,7 @@ public class CustomWebApplicationFactory<TProgram>(Action<IServiceCollection> se
             if (servicesOverrides != null)
                 servicesOverrides(services);
         });
-
-        //builder.UseEnvironment("Development");
+        generator.ConfigureAuthentication(builder);
+        builder.UseEnvironment("Test");
     }
 }

@@ -11,11 +11,11 @@ namespace Crayon.Mock;
 
 public class MockServer
 {
-    public static void Start()
+    public static WireMockServer Start(int port)
     {
         var server = WireMockServer.Start(settings =>
         {
-            settings.Port = 7777;
+            settings.Port = port;
         });
         
         server
@@ -76,6 +76,8 @@ public class MockServer
             .Given(Request.Create().WithPath("/subscriptions/*/expiration").UsingPatch())
             .AtPriority(1)
             .RespondWith(Response.Create().WithStatusCode(200));
+
+        return server;
 
     }
 }

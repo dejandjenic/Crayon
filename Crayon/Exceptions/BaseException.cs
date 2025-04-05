@@ -13,3 +13,9 @@ public class InternalException(string message) : BaseException(message)
     public override HttpStatusCode Code => HttpStatusCode.InternalServerError;
     
 }
+
+public class ForbiddenException(string message) : BaseException(message)
+{
+    public override HttpStatusCode Code => HttpStatusCode.Forbidden;
+    
+}
