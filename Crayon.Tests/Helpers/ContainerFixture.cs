@@ -71,18 +71,9 @@ public class ContainerFixture : IAsyncDisposable
 
     async Task<RedisContainer> StartRedis(string currentTestId)
     {
-        var redisCnfPath = Path.GetFullPath("../../../../redis");
-        if (!Directory.Exists(redisCnfPath))
-        {
-            throw new FileNotFoundException("Required redis conf dir not found");
-        }
-        
         var redisContainer = new RedisBuilder()
             .WithName($"it_{currentTestId}_redis")
             .WithCleanUp(true)
-            .WithBindMount(redisCnfPath,"/usr/local/etc/redis")
-            //.WithEntrypoint("redis-server /usr/local/etc/redis/redis.conf")
-            //.WithCommand("redis-server /usr/local/etc/redis/redis.conf")
             .Build();
 
         await redisContainer.StartAsync();

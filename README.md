@@ -3,13 +3,13 @@
 * refactor publisher registration
 
 
-
-dodati caching
-konfigurisati redis da salje remove notifikacije
-
 dodati signalr
 
 biznis pravila za subskripcije iz maila
+
+* dodati caching
+* konfigurisati redis da salje remove notifikacije
+
 
 * dodati open telemetry
 
