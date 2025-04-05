@@ -1,11 +1,11 @@
 using System.Net;
 using System.Security.Claims;
+using System.Text.Json;
 using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Entities;
-using Crayon.Repositories;
+using Crayon.Notifications.Messages;
 using Crayon.Tests.Helpers;
 using FluentAssertions;
-using TestProject1;
 using TestProject1.Helpers;
 
 namespace Crayon.Tests.FunctionalTests;
@@ -36,8 +36,16 @@ public class FlowTest : IClassFixture<TestRunFixture>
         var secondAccountId = Guid.Parse("de386f83-0f8e-11f0-95c6-34f39a52020b");
 
         string ACTIVE = "Active";
+        var messages = new List<SubscriptionNotificationMessage>();
         
         using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
+        var signalR = new SingalRUtility(helper.GetServer());
+        await signalR.Start();
+        signalR.Handle((message) =>
+        {
+            var data = Newtonsoft.Json.JsonConvert.DeserializeObject<SubscriptionNotificationMessage>(JsonSerializer.Serialize(message));
+            messages.Add(data);
+        });
         
         helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,Constants.FirstCustomerId)));
 
@@ -60,6 +68,13 @@ public class FlowTest : IClassFixture<TestRunFixture>
         ValidateLicences(licences);
 
         var subscriptionExpirationDate = DateTime.UtcNow.AddYears(1);
+
+        await signalR.Subscribe(new Dictionary<string, string>()
+        {
+            {
+                "account", firstAccountId.ToString()
+            }
+        });
         
         var (code, response) = await helper.CreateSubscription(firstAccountId, 1, officeId);
         code.Should().Be(HttpStatusCode.Created);
@@ -77,6 +92,11 @@ public class FlowTest : IClassFixture<TestRunFixture>
         
         subscriptionsAfterCreation.Count.Should().Be(1);
         ValidateSubscription(subscriptionsAfterCreation.First(), response.Id, officeName, ACTIVE, subscriptionExpirationDate);
+
+        messages.Count.Should().Be(1);
+        messages.First().Id.Should().Be(response.Id);
+        messages.First().Success.Should().Be(true);
+        messages.First().Type.Should().Be(SubscriptionNotificationMessageType.Created);
         
         var (licencesBeforeCode,licencesBeforeQuantity) = await helper.Licences(accounts.First().Id, response.Id);
         licencesBeforeCode.Should().Be(HttpStatusCode.OK);
@@ -114,7 +134,7 @@ public class FlowTest : IClassFixture<TestRunFixture>
         var (_,subscriptionsCancel) = await helper.Subscriptions(firstAccountId);
         ValidateSubscription(subscriptionsCancel.First(),response.Id,officeName,"Cancelled",expDate);
 
-        //await StopAllContainers();
+        await signalR.Stop();
     }
 
     private void ValidateLicences(List<Licence> licences)

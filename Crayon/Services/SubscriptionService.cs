@@ -1,8 +1,11 @@
+using Crayon.Endpoints;
 using Crayon.Entities;
 using Crayon.Events.Handlers;
 using Crayon.Events.Publishers;
 using Crayon.Exceptions;
+using Crayon.Notifications.Messages;
 using Crayon.Repositories;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Crayon.Services;
 
@@ -27,7 +30,8 @@ public class SubscriptionService(
     ICCPService ccpService,
     ChangeSubscriptionQuantityPublisher changeQuantityPublisher,
     ChangeSubscriptionExpirationPublisher changeExpirationPublisher,
-    CancelSubscriptionPublisher cancelSubscriptionPublisher
+    CancelSubscriptionPublisher cancelSubscriptionPublisher,
+    INotificationService notificationService
     ) : ISubscriptionService
 {
     public async Task<List<Subscription>> GetSubscriptions(Guid idAccount)
@@ -58,6 +62,12 @@ public class SubscriptionService(
     public async Task UpdateSubscriptionToPurchased(Guid id,DateTime expires,List<Guid> licences, Guid accountId)
     {
         await repository.UpdateSubscriptionToPurchased(id, expires, licences,accountId);
+        await notificationService.NotifyAccount(accountId, new SubscriptionNotificationMessage
+        {
+            Id = id,
+            Success = true,
+            Type = SubscriptionNotificationMessageType.Created
+        });
     }
 
     public async Task ChangeQuantity(Guid id, int quantity, Guid accountId)
@@ -74,11 +84,23 @@ public class SubscriptionService(
     public async Task UpdateSubscriptionChangeQuantity(Guid id,List<Guid> licences, Guid accountId)
     {
         await repository.UpdateSubscriptionChangeQuantity(id, licences,accountId);
+        await notificationService.NotifyAccount(accountId, new SubscriptionNotificationMessage
+        {
+            Id = id,
+            Success = true,
+            Type = SubscriptionNotificationMessageType.ChangeQuantity
+        });
     }
     
     public async Task UpdateSubscriptionError(Guid id,string error, Guid accountId)
     {
         await repository.UpdateSubscriptionError(id, error,accountId);
+        await notificationService.NotifyAccount(accountId, new SubscriptionNotificationMessage
+        {
+            Id = id,
+            Success = false,
+            Type = SubscriptionNotificationMessageType.Error
+        });
     }
     
     public async Task SetExpiration(Guid id, DateTime expires, Guid accountId)
@@ -95,6 +117,12 @@ public class SubscriptionService(
     public async Task UpdateSubscriptionChangeExpiration(Guid id,DateTime expires, Guid accountId)
     {
         await repository.UpdateSubscriptionExpiration(id, expires,accountId);
+        await notificationService.NotifyAccount(accountId, new SubscriptionNotificationMessage
+        {
+            Id = id,
+            Success = true,
+            Type = SubscriptionNotificationMessageType.ChangeExpiration
+        });
     }
     
     public async Task CancelSubscription(Guid id, Guid accountId)
@@ -110,5 +138,11 @@ public class SubscriptionService(
     public async Task PersistCancellation(Guid id, Guid accountId)
     {
         await repository.UpdateStatusToCancelled(id,accountId);
+        await notificationService.NotifyAccount(accountId, new SubscriptionNotificationMessage
+        {
+            Id = id,
+            Success = true,
+            Type = SubscriptionNotificationMessageType.Cancel
+        });
     }
 }

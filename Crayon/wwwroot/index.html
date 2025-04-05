@@ -1,0 +1,29 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.js"></script>
+    <script src="./notification.js?v=4"></script>
+
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        #images div {
+            margin-bottom:5px
+        }
+    </style>
+</head>
+
+
+<input type="text" id="data" value='{"account":"de386f83-0f8e-11f0-95c6-34f39a52020b"}'>
+<button onclick="subscribe(JSON.parse(document.getElementById('data').value))">subscribe</button>
+<button onclick="unsubscribe(JSON.parse(document.getElementById('data').value))">unsubscribe</button>
+
+
+<ul id="messageList">
+
+
+</ul>
+
+
+
+
+
+</html>

@@ -5,6 +5,7 @@ using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Configuration;
 using Crayon.Endpoints.Model;
 using Crayon.Entities;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Crayon.Tests.Helpers;
@@ -29,6 +30,11 @@ public class RestHelper : IDisposable
         },generator);
         
         client = factory.CreateClient();
+    }
+
+    public TestServer GetServer()
+    {
+        return factory.Server;
     }
 
     public void Dispose()

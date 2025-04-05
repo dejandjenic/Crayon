@@ -20,7 +20,7 @@ public static class ServiceExtensions
 {
     public static void RegisterServices(this IServiceCollection services, AppSettings appSettings)
     {
-        
+        services.AddSignalR();
         services.AddOpenTelemetry()
             .WithTracing(tracerProviderBuilder => {
                 tracerProviderBuilder
@@ -50,6 +50,7 @@ public static class ServiceExtensions
         services.AddScoped<IDBConnectionFactory, DBConnectionFactory>();
         services.AddScoped<ICCPService, CCPService>();
         services.AddScoped<IAuthorizationService, AuthorizationService>();
+        services.AddScoped<INotificationService, NotificationService>();
 
         services.AddHttpClient<ICCPClient, CCPClient>((client) =>
         {

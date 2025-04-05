@@ -1,4 +1,5 @@
 using Crayon.Endpoints.Model;
+using Crayon.Notifications;
 using Crayon.Services;
 using O9d.AspNet.FluentValidation;
 
@@ -91,5 +92,8 @@ public static class Registration
                 await service.CancelSubscription(subscriptionId,id);
                 return Results.Accepted();
             }).WithName("CancelSubscription");
+
+        app.UseStaticFiles();
+        app.MapHub<NotificationHub>("/notification");
     }
 }

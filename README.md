@@ -2,10 +2,10 @@
 
 * refactor publisher registration
 
-
-dodati signalr
-
 biznis pravila za subskripcije iz maila
+
+* dodati signalr
+
 
 * dodati caching
 * konfigurisati redis da salje remove notifikacije
