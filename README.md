@@ -9,10 +9,12 @@ konfigurisati redis da salje remove notifikacije
 
 dodati signalr
 
-dodati open telemetry
+biznis pravila za subskripcije iz maila
+
+* dodati open telemetry
 
 
-biznis pravila za subskripcije iz maila``
+
 
 
 * refactor Status = "Active",

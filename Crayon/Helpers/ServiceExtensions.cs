@@ -6,6 +6,9 @@ using Crayon.Events.Publishers;
 using Crayon.Repositories;
 using Crayon.Services;
 using FluentValidation;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
 using RabbitMQ.Client;
 
 namespace Crayon.Helpers;
@@ -14,6 +17,21 @@ public static class ServiceExtensions
 {
     public static void RegisterServices(this IServiceCollection services, AppSettings appSettings)
     {
+        
+        services.AddOpenTelemetry()
+            .WithTracing(tracerProviderBuilder => {
+                tracerProviderBuilder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("CrayonAPI"))
+                    .AddConsoleExporter();
+            })
+            .WithMetrics(meterProviderBuilder => {
+                meterProviderBuilder
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation();
+            });
+        
         services.AddAuthorization();
 
         services.AddAuthentication("Bearer").AddJwtBearer();
