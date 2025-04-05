@@ -71,11 +71,13 @@ public static class ServiceExtensions
         services.AddSingleton<RedisGenericCache>();
         services.Decorate<IAccountRepository, RedisAccountRepository>();
         services.Decorate<ISubscriptionRepository, RedisSubscriptionRepository>();
+        services.Decorate<ICCPClient, RedisCCPClient>();
         
         services.AddSingleton<IMemoryCache, MemoryCache>();
         services.AddSingleton<InMemoryGenericCache>();
         services.Decorate<IAccountRepository, InMemoryAccountRepository>();
         services.Decorate<ISubscriptionRepository, InMemorySubscriptionRepository>();
+        services.Decorate<ICCPClient, InMemoryCCPClient>();
         
         services.AddHostedService<RedisSubscriberNotificationService>();
         services.AddSingleton<IRedisSubscriber, RedisSubscriber>();

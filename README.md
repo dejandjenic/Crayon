@@ -49,6 +49,10 @@ Initial seeding script is localted in root of this repository and named Seed.sql
 
 when running locally for the fist time user needs to execute script for schema creation and optionally for seeding data.
 
+#### Real time updates
+
+API provides real time updates via SignalR implementation which is configured to use Redis backplane for SignalR and can be safely deployed in multi instance environment (Kubernetes , ...)
+
 
 ### Crayon tests
 
