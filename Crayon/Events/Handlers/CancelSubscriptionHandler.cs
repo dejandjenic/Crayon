@@ -25,6 +25,7 @@ public class CancelSubscriptionHandler(ConnectionFactory factory,IServiceScopeFa
             {
                 SubscriptionId = data.SubscriptionId,
                 Success = true,
+                AccountId = data.AccountId
             });
         }
         catch(Exception ex)
@@ -33,7 +34,8 @@ public class CancelSubscriptionHandler(ConnectionFactory factory,IServiceScopeFa
             {
                 SubscriptionId = data.SubscriptionId,
                 Success = false,
-                Error = ex.Message
+                Error = ex.Message,
+                AccountId = data.AccountId
             });
         }
 

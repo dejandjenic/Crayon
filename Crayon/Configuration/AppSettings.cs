@@ -6,6 +6,7 @@ public class AppSettings
     public string CCPBaseAddress  { get; set; }
     public bool ConfigureJWT { get; set; }
     public string ConnectionString { get; set; } = "";
+    public string RedisConnectionString { get; set; } = "";
     public PublisherConfiguration PublisherConfiguration { get; set; }
 }
 

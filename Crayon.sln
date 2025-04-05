@@ -7,6 +7,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{8C
 		README.md = README.md
 		Schema.sql = Schema.sql
 		Seed.sql = Seed.sql
+		redis\redis.conf = redis\redis.conf
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crayon.Tests", "Crayon.Tests\Crayon.Tests.csproj", "{5FF60681-A5FA-4DC5-8761-5854EB4BCF59}"

@@ -1,15 +1,18 @@
 using Crayon.ApiClients.CCPClient;
+using Crayon.Caching;
 using Crayon.Configuration;
-using Crayon.Events.Base;
 using Crayon.Events.Handlers;
 using Crayon.Events.Publishers;
 using Crayon.Repositories;
 using Crayon.Services;
 using FluentValidation;
+using Microsoft.Extensions.Caching.Memory;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using RabbitMQ.Client;
+using StackExchange.Redis;
+using ISubscriber = Crayon.Events.Base.ISubscriber;
 
 namespace Crayon.Helpers;
 
@@ -62,6 +65,19 @@ public static class ServiceExtensions
 
         RegisterEvents(services);
         services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
+        services.AddSingleton(_ => ConnectionMultiplexer.Connect(appSettings.RedisConnectionString));
+        
+        services.AddSingleton<RedisGenericCache>();
+        services.Decorate<IAccountRepository, RedisAccountRepository>();
+        services.Decorate<ISubscriptionRepository, RedisSubscriptionRepository>();
+        
+        services.AddSingleton<IMemoryCache, MemoryCache>();
+        services.AddSingleton<InMemoryGenericCache>();
+        services.Decorate<IAccountRepository, InMemoryAccountRepository>();
+        services.Decorate<ISubscriptionRepository, InMemorySubscriptionRepository>();
+        
+        services.AddHostedService<RedisSubscriberNotificationService>();
+        services.AddSingleton<IRedisSubscriber, RedisSubscriber>();
     }
 
     private static void RegisterEvents(IServiceCollection services)

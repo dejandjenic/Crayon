@@ -16,9 +16,9 @@ public class ChangeSubscriptionExpirationFinalizeHandler(ConnectionFactory facto
         var subscriptionService = scope.ServiceProvider.GetRequiredService<ISubscriptionService>();
         
         if(data.Success)
-            await subscriptionService.UpdateSubscriptionChangeExpiration(data.SubscriptionId, data.Expires);
+            await subscriptionService.UpdateSubscriptionChangeExpiration(data.SubscriptionId, data.Expires, data.AccountId);
         else
-            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error);
+            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error, data.AccountId);
 
         return true;
     }

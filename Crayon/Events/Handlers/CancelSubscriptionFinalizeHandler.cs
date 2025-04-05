@@ -16,9 +16,9 @@ public class CancelSubscriptionFinalizeHandler(ConnectionFactory factory,IServic
         var subscriptionService = scope.ServiceProvider.GetRequiredService<ISubscriptionService>();
         
         if(data.Success)
-            await subscriptionService.PersistCancellation(data.SubscriptionId);
+            await subscriptionService.PersistCancellation(data.SubscriptionId, data.AccountId);
         else
-            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error);
+            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error, data.AccountId);
 
         return true;
     }

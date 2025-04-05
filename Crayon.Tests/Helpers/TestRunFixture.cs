@@ -8,11 +8,13 @@ public class TestRunFixture : IAsyncDisposable
 
     private string mainConnectionString;
     private string queueConnectionString;
+    private string cacheConnectionString;
 
     public void SetConnectionStrings(ContainerFixture containerFixture)
     {
         mainConnectionString = containerFixture.GetConnectionString(ContainerType.Db);
         queueConnectionString = containerFixture.GetConnectionString(ContainerType.Queue);
+        cacheConnectionString = containerFixture.GetConnectionString(ContainerType.Cache);
     }
     
     public async ValueTask DisposeAsync()
@@ -24,6 +26,7 @@ public class TestRunFixture : IAsyncDisposable
     {
         settings.ConnectionString = mainConnectionString.Replace("it_db", Id);
         settings.PublisherConfiguration.Url = queueConnectionString;
+        settings.RedisConnectionString = cacheConnectionString;
         return settings;
     }
     

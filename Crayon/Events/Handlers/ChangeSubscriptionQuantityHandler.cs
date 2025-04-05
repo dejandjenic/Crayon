@@ -25,7 +25,8 @@ public class ChangeSubscriptionQuantityHandler(ConnectionFactory factory,IServic
             {
                 SubscriptionId = data.SubscriptionId,
                 Success = true,
-                Licences = response.Licences
+                Licences = response.Licences,
+                AccountId = data.AccountId
             });
         }
         catch(Exception ex)
@@ -34,7 +35,8 @@ public class ChangeSubscriptionQuantityHandler(ConnectionFactory factory,IServic
             {
                 SubscriptionId = data.SubscriptionId,
                 Success = false,
-                Error = ex.Message
+                Error = ex.Message,
+                AccountId = data.AccountId
             });
         }
 

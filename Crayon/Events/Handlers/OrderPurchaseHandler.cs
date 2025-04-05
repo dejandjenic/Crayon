@@ -13,7 +13,7 @@ public class OrderPurchaseHandler(ConnectionFactory factory,IServiceScopeFactory
     {
         var scope = serviceScopeFactory.CreateScope();
         var subscriptionService = scope.ServiceProvider.GetRequiredService<ISubscriptionService>();
-        await subscriptionService.UpdateSubscriptionToPurchased(data.Id, data.Expires, data.Licences);
+        await subscriptionService.UpdateSubscriptionToPurchased(data.Id, data.Expires, data.Licences, data.AccountId);
         return true;
     }
 }

@@ -16,9 +16,9 @@ public class ChangeSubscriptionQuantityFinalizeHandler(ConnectionFactory factory
         var subscriptionService = scope.ServiceProvider.GetRequiredService<ISubscriptionService>();
         
         if(data.Success)
-            await subscriptionService.UpdateSubscriptionChangeQuantity(data.SubscriptionId, data.Licences);
+            await subscriptionService.UpdateSubscriptionChangeQuantity(data.SubscriptionId, data.Licences, data.AccountId);
         else
-            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error);
+            await subscriptionService.UpdateSubscriptionError(data.SubscriptionId, data.Error,data.AccountId);
 
         return true;
     }

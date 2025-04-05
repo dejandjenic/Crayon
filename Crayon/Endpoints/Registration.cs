@@ -67,7 +67,7 @@ public static class Registration
             {
                 var idCustomer = await userAccessorService.CurrentCustomer();
                 await authorizationService.CheckSubscriptionAccess(id,idCustomer,subscriptionId);
-                await service.ChangeQuantity(subscriptionId, request.Quantity);
+                await service.ChangeQuantity(subscriptionId, request.Quantity,id);
                 return Results.Accepted();
             }).WithName("UpdateSubscriptionQuantity");
 
@@ -78,7 +78,7 @@ public static class Registration
             {
                 var idCustomer = await userAccessorService.CurrentCustomer();
                 await authorizationService.CheckSubscriptionAccess(id,idCustomer,subscriptionId);
-                await service.SetExpiration(subscriptionId, request.Expires);
+                await service.SetExpiration(subscriptionId, request.Expires,id);
                 return Results.Accepted();
             }).WithName("UpdateSubscriptionExpiration");
 
@@ -88,7 +88,7 @@ public static class Registration
             {
                 var idCustomer = await userAccessorService.CurrentCustomer();
                 await authorizationService.CheckSubscriptionAccess(id,idCustomer,subscriptionId);
-                await service.CancelSubscription(subscriptionId);
+                await service.CancelSubscription(subscriptionId,id);
                 return Results.Accepted();
             }).WithName("CancelSubscription");
     }

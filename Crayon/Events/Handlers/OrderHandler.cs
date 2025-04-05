@@ -21,7 +21,8 @@ public class OrderHandler(ConnectionFactory factory,IServiceScopeFactory service
         {
             Expires = response.Expires,
             Licences = response.Licences,
-            Id = data.SubscriptionId
+            Id = data.SubscriptionId,
+            AccountId = data.AccountId
         });
         
         return true;

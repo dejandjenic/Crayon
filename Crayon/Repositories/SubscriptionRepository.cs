@@ -10,12 +10,12 @@ public interface ISubscriptionRepository
     Task<List<Subscription>> GetSubscriptions(Guid idAccount);
     Task<List<Licence>> GetLicences(Guid idSubscription);
     Task<Guid> CreateSubscription(string name, Guid accountId, Guid externalId);
-    Task UpdateSubscriptionToPurchased(Guid id, DateTime expires, List<Guid> licences);
-    Task UpdateStatusToProcessing(Guid id);
-    Task UpdateSubscriptionChangeQuantity(Guid id, List<Guid> licences);
-    Task UpdateSubscriptionError(Guid id, string error);
-    Task UpdateSubscriptionExpiration(Guid id, DateTime expires);
-    Task UpdateStatusToCancelled(Guid id);
+    Task UpdateSubscriptionToPurchased(Guid id, DateTime expires, List<Guid> licences, Guid accountId);
+    Task UpdateStatusToProcessing(Guid id, Guid accountId);
+    Task UpdateSubscriptionChangeQuantity(Guid id, List<Guid> licences, Guid accountId);
+    Task UpdateSubscriptionError(Guid id, string error, Guid accountId);
+    Task UpdateSubscriptionExpiration(Guid id, DateTime expires, Guid accountId);
+    Task UpdateStatusToCancelled(Guid id, Guid accountId);
 }
 public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : ISubscriptionRepository
 {
@@ -43,7 +43,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
         return id;
     }
     
-    public async Task UpdateSubscriptionToPurchased(Guid id,DateTime expires,List<Guid> licences)
+    public async Task UpdateSubscriptionToPurchased(Guid id,DateTime expires,List<Guid> licences, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         using (var tran = connection.BeginTransaction())
@@ -62,7 +62,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
     }
     
     
-    public async Task UpdateStatusToProcessing(Guid id)
+    public async Task UpdateStatusToProcessing(Guid id, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         
@@ -70,7 +70,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
             new { ID = id });
     }
     
-    public async Task UpdateStatusToCancelled(Guid id)
+    public async Task UpdateStatusToCancelled(Guid id, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         
@@ -78,7 +78,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
             new { ID = id });
     }
     
-    public async Task UpdateSubscriptionChangeQuantity(Guid id,List<Guid> licences)
+    public async Task UpdateSubscriptionChangeQuantity(Guid id,List<Guid> licences, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         using (var tran = connection.BeginTransaction())
@@ -99,7 +99,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
         }
     }
     
-    public async Task UpdateSubscriptionError(Guid id,string error)
+    public async Task UpdateSubscriptionError(Guid id,string error, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         
@@ -107,7 +107,7 @@ public class SubscriptionRepository(IDBConnectionFactory connectionFactory) : IS
             new { ID = id, Error = error });
     }
     
-    public async Task UpdateSubscriptionExpiration(Guid id,DateTime expires)
+    public async Task UpdateSubscriptionExpiration(Guid id,DateTime expires, Guid accountId)
     {
         using var connection = connectionFactory.GetConnection();
         

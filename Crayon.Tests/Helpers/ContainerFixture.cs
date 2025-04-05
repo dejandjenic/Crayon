@@ -1,6 +1,7 @@
 using DotNet.Testcontainers.Containers;
 using Testcontainers.MariaDb;
 using Testcontainers.RabbitMq;
+using Testcontainers.Redis;
 
 namespace Crayon.Tests.Helpers;
 
@@ -15,7 +16,8 @@ public class DatabaseCollection : ICollectionFixture<ContainerFixture>
 public enum ContainerType
 {
     Db,
-    Queue
+    Queue,
+    Cache
 }
 
 public class ContainerFixture : IAsyncDisposable
@@ -35,6 +37,7 @@ public class ContainerFixture : IAsyncDisposable
         {
             ContainerType.Db => (containers[container] as MariaDbContainer).GetConnectionString(),
             ContainerType.Queue => (containers[container] as RabbitMqContainer).GetConnectionString(),
+            ContainerType.Cache => (containers[container] as RedisContainer).GetConnectionString(),
             _ => string.Empty
         };
     }
@@ -53,14 +56,38 @@ public class ContainerFixture : IAsyncDisposable
 
         var mariaDbContainerTask = StartDatabase(currentTestId);
         var rabbitMqContainerTask = StartQueue(currentTestId);
+        var redisContainerTask = StartRedis(currentTestId);
 
-        await Task.WhenAll(mariaDbContainerTask, rabbitMqContainerTask);
+        await Task.WhenAll(mariaDbContainerTask, rabbitMqContainerTask,redisContainerTask);
 
         var mariaDbContainer = mariaDbContainerTask.Result;
         var rabbitMqContainer = rabbitMqContainerTask.Result;
+        var redisContainer = redisContainerTask.Result;
         
         containers.Add(ContainerType.Db,mariaDbContainer);
         containers.Add(ContainerType.Queue,rabbitMqContainer);
+        containers.Add(ContainerType.Cache,redisContainer);
+    }
+
+    async Task<RedisContainer> StartRedis(string currentTestId)
+    {
+        var redisCnfPath = Path.GetFullPath("../../../../redis");
+        if (!Directory.Exists(redisCnfPath))
+        {
+            throw new FileNotFoundException("Required redis conf dir not found");
+        }
+        
+        var redisContainer = new RedisBuilder()
+            .WithName($"it_{currentTestId}_redis")
+            .WithCleanUp(true)
+            .WithBindMount(redisCnfPath,"/usr/local/etc/redis")
+            //.WithEntrypoint("redis-server /usr/local/etc/redis/redis.conf")
+            //.WithCommand("redis-server /usr/local/etc/redis/redis.conf")
+            .Build();
+
+        await redisContainer.StartAsync();
+        await redisContainer.ExecAsync(new List<string>() { "redis-cli", "config", "set", "notify-keyspace-events", "KEA" });
+        return redisContainer;
     }
 
     async Task<RabbitMqContainer> StartQueue(string currentTestId)

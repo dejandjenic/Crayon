@@ -12,6 +12,7 @@
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
         <PackageReference Include="MySqlConnector" Version="2.4.0" />
+        <PackageReference Include="NRedisStack" Version="1.0.0-beta1" />
         <PackageReference Include="O9d.AspNet.FluentValidation" Version="0.1.1" />
         <PackageReference Include="RabbitMQ.Client" Version="7.1.2" />
         <PackageReference Include="TestJWTLibrary" Version="1.0.3" />
@@ -22,6 +23,8 @@
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" Version="1.11.1" />
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.11.0" />
         <PackageReference Include="OpenTelemetry.Instrumentation.Http" Version="1.11.0" />
+
+        <PackageReference Include="Scrutor" Version="4.2.2" />
 
     </ItemGroup>
 
