@@ -72,6 +72,8 @@ is displayed on image bellow
 
 ![Purchase flow chart](charts/Purchase.png "get")
 
+similar flow is used for all endpoints that change order data (cancel, change quantity and set expiration).
+
 
 ### Crayon tests
 
