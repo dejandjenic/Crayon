@@ -54,6 +54,25 @@ when running locally for the fist time user needs to execute script for schema c
 API provides real time updates via SignalR implementation which is configured to use Redis backplane for SignalR and can be safely deployed in multi instance environment (Kubernetes , ...)
 
 
+#### Flowcharts
+
+**Get endpoint flow chart used in endpoints**
+
+* /inventory
+* /accounts
+* /accounts/{id}/subscriptions
+* /accounts/{id}/subscriptions/{subid}/licences
+
+is displayed on image bellow
+
+![Get endpoints flow chart](charts/GetEndpointsFlowChart.png "get")
+
+
+**Purchase order flowchart**
+
+![Purchase flow chart](charts/Purchase.png "get")
+
+
 ### Crayon tests
 
 XUnit framework is used as main framework for test solution.
