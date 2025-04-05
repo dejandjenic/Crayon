@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Crayon.Tests;
+namespace Crayon.Tests.Helpers;
 
 public class CustomWebApplicationFactory<TProgram>(Action<IServiceCollection> servicesOverrides,TestJWTLibrary.Generator generator)
     : WebApplicationFactory<TProgram>

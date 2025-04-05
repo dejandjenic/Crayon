@@ -1,7 +1,7 @@
 using System.Text;
 using MySqlConnector;
 
-namespace TestProject1;
+namespace Crayon.Tests.Helpers;
 
 public class DatabaseInitializer
 {

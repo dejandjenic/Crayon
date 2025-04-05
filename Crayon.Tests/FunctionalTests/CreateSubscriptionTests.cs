@@ -13,12 +13,12 @@ public class CreateSubscriptionTests : IClassFixture<TestRunFixture>
     private readonly ContainerFixture _testbase;
     private TestRunFixture _run;
 
-    public CreateSubscriptionTests(ContainerFixture testbase,TestRunFixture run)
+    public CreateSubscriptionTests(ContainerFixture containerFixture,TestRunFixture runFixture)
     {
-        _testbase = testbase;
-        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),run.Id);
-        _run = run;
-        _run.MainConnectionString = _testbase.GetConnectionString("db");
+        _testbase = containerFixture;
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),runFixture.Id);
+        _run = runFixture;
+        _run.SetConnectionStrings(containerFixture);
     }
 
     Guid accountId = Guid.Parse("de386f83-0f8e-11f0-95c6-34f39a52020b");

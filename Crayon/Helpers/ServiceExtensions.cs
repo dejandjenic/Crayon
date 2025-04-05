@@ -14,8 +14,6 @@ public static class ServiceExtensions
 {
     public static void RegisterServices(this IServiceCollection services, AppSettings appSettings)
     {
-        
-        //services.AddAuthentication();
         services.AddAuthorization();
 
         services.AddAuthentication("Bearer").AddJwtBearer();
@@ -39,11 +37,21 @@ public static class ServiceExtensions
 
 
         services.AddSingleton<AppSettings>(_ => appSettings);
-        services.AddSingleton<ConnectionFactory>(_ => new ConnectionFactory()
+        services.AddSingleton<ConnectionFactory>(_ =>
         {
-            HostName = appSettings.PublisherConfiguration.HostName
+            var data =  new ConnectionFactory()
+            {
+                Uri = new Uri(appSettings.PublisherConfiguration.Url)
+            };
+            return data;
         });
 
+        RegisterEvents(services);
+        services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
+    }
+
+    private static void RegisterEvents(IServiceCollection services)
+    {
         services.AddSingleton<OrderPublisher>(sp =>
         {
             var svc = new OrderPublisher(sp.GetRequiredService<ConnectionFactory>());
@@ -104,6 +112,5 @@ public static class ServiceExtensions
             return svc;
         });
         services.AddSingleton<ISubscriber, CancelSubscriptionFinalizeHandler>();
-        services.AddValidatorsFromAssemblyContaining<Program>(ServiceLifetime.Singleton);
     }
 }

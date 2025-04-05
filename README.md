@@ -1,6 +1,6 @@
 # Crayon
 
-refactor publisher registration
+* refactor publisher registration
 
 
 
@@ -11,6 +11,7 @@ dodati open telemetry
 
 
 biznis pravila za subskripcije iz maila
+* dodati rabbit u container za testove
 
 * dodati validaciju
 * dodati exception handling

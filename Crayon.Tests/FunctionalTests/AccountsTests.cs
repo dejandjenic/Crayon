@@ -13,12 +13,12 @@ public class AccountsTests : IClassFixture<TestRunFixture>
     private readonly ContainerFixture _testbase;
     private TestRunFixture _run;
 
-    public AccountsTests(ContainerFixture testbase,TestRunFixture run)
+    public AccountsTests(ContainerFixture containerFixture,TestRunFixture runFixture)
     {
-        _testbase = testbase;
-        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),run.Id);
-        _run = run;
-        _run.MainConnectionString = _testbase.GetConnectionString("db");
+        _testbase = containerFixture;
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),runFixture.Id);
+        _run = runFixture;
+        _run.SetConnectionStrings(containerFixture);
     }
 
     [Fact]
