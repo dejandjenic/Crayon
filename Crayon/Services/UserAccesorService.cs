@@ -13,7 +13,7 @@ public class UserAccessorService(IHttpContextAccessor httpContextAccessor):IUser
     {
         try
         {
-            return Guid.Parse(httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == "customer_id")
+            return Guid.Parse(httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(x => x.Type == Constants.CustomerIdClaimName)
                 .Value);
         }
         catch

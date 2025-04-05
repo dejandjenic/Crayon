@@ -1,4 +1,5 @@
 using System.Data;
+using Crayon.Entities;
 using Crayon.Services;
 using Dapper;
 
@@ -16,24 +17,4 @@ public class AccountRepository(IDBConnectionFactory connectionFactory) : IAccoun
         
         return (await connection.QueryAsync<Account>("select * from Account where IDCustomer = @idCustomer", new { idCustomer })).ToList();
     }
-}
-
-public class Account
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-}
-
-public class Subscription
-{
-    public Guid Id { get; set; }
-    public string Name { get; set; }
-    public string Status { get; set; }
-    public DateTime Expires { get; set; }
-}
-
-public class Licence
-{
-    public Guid Id { get; set; }
-    public string Value { get; set; }
 }

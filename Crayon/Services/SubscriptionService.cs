@@ -1,3 +1,4 @@
+using Crayon.Entities;
 using Crayon.Events.Handlers;
 using Crayon.Events.Publishers;
 using Crayon.Exceptions;

@@ -12,6 +12,12 @@ public class DatabaseCollection : ICollectionFixture<ContainerFixture>
     // ICollectionFixture<> interfaces.
 }
 
+public enum ContainerType
+{
+    Db,
+    Queue
+}
+
 public class ContainerFixture : IAsyncDisposable
 {
 
@@ -21,14 +27,14 @@ public class ContainerFixture : IAsyncDisposable
     }
     
 
-    private Dictionary<string,DockerContainer> containers = new ();
+    private Dictionary<ContainerType,DockerContainer> containers = new ();
 
-    public string GetConnectionString(string container)
+    public string GetConnectionString(ContainerType container)
     {
         return container switch
         {
-            "db" => (containers[container] as MariaDbContainer).GetConnectionString(),
-            "queue" => (containers[container] as RabbitMqContainer).GetConnectionString(),
+            ContainerType.Db => (containers[container] as MariaDbContainer).GetConnectionString(),
+            ContainerType.Queue => (containers[container] as RabbitMqContainer).GetConnectionString(),
             _ => string.Empty
         };
     }
@@ -53,8 +59,8 @@ public class ContainerFixture : IAsyncDisposable
         var mariaDbContainer = mariaDbContainerTask.Result;
         var rabbitMqContainer = rabbitMqContainerTask.Result;
         
-        containers.Add("db",mariaDbContainer);
-        containers.Add("queue",rabbitMqContainer);
+        containers.Add(ContainerType.Db,mariaDbContainer);
+        containers.Add(ContainerType.Queue,rabbitMqContainer);
     }
 
     async Task<RabbitMqContainer> StartQueue(string currentTestId)

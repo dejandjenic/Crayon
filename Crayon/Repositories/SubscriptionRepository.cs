@@ -1,4 +1,5 @@
 using System.Data;
+using Crayon.Entities;
 using Crayon.Services;
 using Dapper;
 

@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Claims;
 using Crayon.ApiClients.CCPClient.Model;
+using Crayon.Entities;
 using Crayon.Repositories;
 using Crayon.Tests.Helpers;
 using FluentAssertions;
@@ -18,7 +19,7 @@ public class FlowTest : IClassFixture<TestRunFixture>
     public FlowTest(ContainerFixture containerFixture,TestRunFixture runFixture)
     {
         _testbase = containerFixture;
-        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),runFixture.Id);
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString(ContainerType.Db),runFixture.Id);
         _run = runFixture;
         _run.SetConnectionStrings(containerFixture);
     }
@@ -38,7 +39,7 @@ public class FlowTest : IClassFixture<TestRunFixture>
         
         using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
         
-        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim("customer_id","8debd754-286d-4944-8fb5-1a48440f3848")));
+        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,Constants.FirstCustomerId)));
 
         var (_,inventory) = await helper.Inventory();
         

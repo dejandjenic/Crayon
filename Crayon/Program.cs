@@ -4,6 +4,7 @@ using Crayon.Helpers;
 using Crayon.Middleware;
 using Crayon.Mock;
 using System.Security.Claims;
+using Crayon;
 
 var builder = WebApplication.CreateBuilder(args);
 var appSettings = builder.Configuration.GetSection("AppSettings").Get<AppSettings>();
@@ -13,7 +14,7 @@ if (appSettings.ConfigureJWT)
 {
     TestJWTLibrary.Generator generator = new();
     generator.ConfigureAuthentication(builder.WebHost);
-    var defaultToken = generator.GenerateJwt(additionalClaims:new Claim("customer_id","8debd754-286d-4944-8fb5-1a48440f3848"));
+    var defaultToken = generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,Constants.FirstCustomerId));
     Console.WriteLine(defaultToken);
 }
 

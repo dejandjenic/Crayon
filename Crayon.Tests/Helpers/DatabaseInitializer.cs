@@ -12,7 +12,9 @@ public class DatabaseInitializer
         conn.Open();
 
         var sb = new StringBuilder();
-        sb.AppendLine($"drop database if exists {databaseName};create database {databaseName};use {databaseName};");
+        sb.AppendLine($"drop database if exists {databaseName};");
+        sb.AppendLine($"create database {databaseName};");
+        sb.AppendLine($"use {databaseName};");
         sb.AppendLine(File.ReadAllText("../../../../Schema.sql"));
         sb.AppendLine(File.ReadAllText("../../../../Seed.sql"));
         

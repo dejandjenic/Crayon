@@ -4,24 +4,10 @@ using RabbitMQ.Client;
 
 namespace Crayon.Events.Base;
 
-public interface IPublisher<T>:IPublisherSetup
+public interface IPublisher<T>
 {
     Task Start();
     Task Publish(T data);
-}
-
-public interface IPublisherSetup
-{
-    
-}
-
-public class PublisherFactory
-{
-    // public T Create<T>(ConnectionFactory factory)
-    // where T : Publisher<object>
-    // {
-    //     new 
-    // }
 }
 
 public class Publisher<T>(ConnectionFactory factory) : IPublisher<T>

@@ -16,7 +16,7 @@ public class CreateSubscriptionTests : IClassFixture<TestRunFixture>
     public CreateSubscriptionTests(ContainerFixture containerFixture,TestRunFixture runFixture)
     {
         _testbase = containerFixture;
-        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),runFixture.Id);
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString(ContainerType.Db),runFixture.Id);
         _run = runFixture;
         _run.SetConnectionStrings(containerFixture);
     }
@@ -36,7 +36,7 @@ public class CreateSubscriptionTests : IClassFixture<TestRunFixture>
     [Fact]
     async Task Should_Handle_Invalid_Input(){
         using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
-        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim("customer_id","8debd754-286d-4944-8fb5-1a48440f3848")));
+        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,Constants.FirstCustomerId)));
         var (code,x) = await helper.CreateSubscription(accountId,-1,subscriptionId);
         code.Should().Be(HttpStatusCode.BadRequest);
 
@@ -45,7 +45,7 @@ public class CreateSubscriptionTests : IClassFixture<TestRunFixture>
     [Fact]
     async Task Should_Be_Authorized(){
         using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
-        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim("customer_id","7debd754-286d-4944-8fb5-1a48440f3848")));
+        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,"7debd754-286d-4944-8fb5-1a48440f3848")));
         var (code,x) = await helper.CreateSubscription(accountId,1,subscriptionId);
         code.Should().Be(HttpStatusCode.Forbidden);
 

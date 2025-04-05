@@ -37,13 +37,9 @@ public static class ServiceExtensions
 
 
         services.AddSingleton<AppSettings>(_ => appSettings);
-        services.AddSingleton<ConnectionFactory>(_ =>
+        services.AddSingleton<ConnectionFactory>(_ => new ConnectionFactory()
         {
-            var data =  new ConnectionFactory()
-            {
-                Uri = new Uri(appSettings.PublisherConfiguration.Url)
-            };
-            return data;
+            Uri = new Uri(appSettings.PublisherConfiguration.Url)
         });
 
         RegisterEvents(services);

@@ -5,8 +5,6 @@ using RabbitMQ.Client.Events;
 
 namespace Crayon.Events.Base;
 
-
-
 public interface ISubscriber
 {
     Task Start();
@@ -44,13 +42,19 @@ public class Subscriber<T>(ConnectionFactory factory) : ISubscriber
             var body = ea.Body.ToArray();
             var message = Encoding.UTF8.GetString(body);
             T data = JsonSerializer.Deserialize<T>(message);
-            //var routingKey = ea.RoutingKey;
-            //Console.WriteLine($" [x] Received '{routingKey}':'{message}'");
-            var handled = await HandleData(data);
-            if(handled)
-                await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
-            else
-                await channel.BasicNackAsync(deliveryTag:ea.DeliveryTag, multiple:false, requeue:false);
+
+            try
+            {
+                var handled = await HandleData(data);
+                if (handled)
+                    await channel.BasicAckAsync(deliveryTag: ea.DeliveryTag, multiple: false);
+                else
+                    await channel.BasicNackAsync(deliveryTag: ea.DeliveryTag, multiple: false, requeue: false);
+            }
+            catch
+            {
+                await channel.BasicNackAsync(deliveryTag: ea.DeliveryTag, multiple: false, requeue: false);
+            }
         };
 
         await channel.BasicConsumeAsync(queueName, autoAck: false, consumer: consumer);

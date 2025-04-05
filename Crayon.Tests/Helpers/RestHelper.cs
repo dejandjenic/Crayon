@@ -4,31 +4,11 @@ using System.Net.Http.Json;
 using Crayon.ApiClients.CCPClient.Model;
 using Crayon.Configuration;
 using Crayon.Endpoints.Model;
-using Crayon.Repositories;
-using Microsoft.AspNetCore.TestHost;
+using Crayon.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Crayon.Tests.Helpers;
 
-public class SafePortGenerator
-{
-    public static object lockObject = new();
-    public static List<int> ports = new();
-    public static int Generate()
-    {
-        int port = new Random().Next(7001, 7770);
-        lock (lockObject)
-        {
-            while (ports.Contains(port))
-            {
-                port = new Random().Next(7001, 7770);
-            }
-            ports.Add(port);
-        }
-
-        return port;
-    }
-}
 public class RestHelper : IDisposable
 {
     private HttpClient client;

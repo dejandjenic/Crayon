@@ -1,3 +1,4 @@
+using Crayon.Entities;
 using Crayon.Repositories;
 
 namespace Crayon.Services;

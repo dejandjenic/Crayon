@@ -16,7 +16,7 @@ public class AccountsTests : IClassFixture<TestRunFixture>
     public AccountsTests(ContainerFixture containerFixture,TestRunFixture runFixture)
     {
         _testbase = containerFixture;
-        DatabaseInitializer.Initialize(_testbase.GetConnectionString("db"),runFixture.Id);
+        DatabaseInitializer.Initialize(_testbase.GetConnectionString(ContainerType.Db),runFixture.Id);
         _run = runFixture;
         _run.SetConnectionStrings(containerFixture);
     }
@@ -33,7 +33,7 @@ public class AccountsTests : IClassFixture<TestRunFixture>
     [Fact]
     async Task Should_Return_Accounts(){
         using var helper = new RestHelper(_run.AdjustApplicationSettings,generator);
-        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim("customer_id","8debd754-286d-4944-8fb5-1a48440f3848")));
+        helper.Authorize(generator.GenerateJwt(additionalClaims:new Claim(Constants.CustomerIdClaimName,Constants.FirstCustomerId)));
         var (code,accounts) = await helper.Accounts();
         code.Should().Be(HttpStatusCode.OK);
         accounts.Count.Should().Be(2);

@@ -2,20 +2,7 @@ using System.Net;
 
 namespace Crayon.Exceptions;
 
-public class BaseException(string message) : Exception
+public class BaseException(string message) : Exception(message)
 {
-    public string Message { get; } = message;
     public virtual HttpStatusCode Code => HttpStatusCode.InternalServerError;
-}
-
-public class InternalException(string message) : BaseException(message)
-{
-    public override HttpStatusCode Code => HttpStatusCode.InternalServerError;
-    
-}
-
-public class ForbiddenException(string message) : BaseException(message)
-{
-    public override HttpStatusCode Code => HttpStatusCode.Forbidden;
-    
 }

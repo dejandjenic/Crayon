@@ -7,11 +7,18 @@
 dodati caching
 konfigurisati redis da salje remove notifikacije
 
+dodati signalr
+
 dodati open telemetry
 
 
-biznis pravila za subskripcije iz maila
+biznis pravila za subskripcije iz maila``
+
+
+* refactor Status = "Active",
+
 * dodati rabbit u container za testove
+
 
 * dodati validaciju
 * dodati exception handling
