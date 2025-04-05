@@ -2,7 +2,7 @@
 
 * refactor publisher registration
 
-biznis pravila za subskripcije iz maila
+* biznis pravila za subskripcije iz maila
 
 * dodati signalr
 

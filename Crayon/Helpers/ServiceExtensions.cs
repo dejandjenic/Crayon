@@ -20,7 +20,7 @@ public static class ServiceExtensions
 {
     public static void RegisterServices(this IServiceCollection services, AppSettings appSettings)
     {
-        services.AddSignalR();
+        services.AddSignalR().AddStackExchangeRedis(appSettings.RedisConnectionString);
         services.AddOpenTelemetry()
             .WithTracing(tracerProviderBuilder => {
                 tracerProviderBuilder

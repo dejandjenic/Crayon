@@ -11,6 +11,7 @@
         <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.4.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.3" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SignalR.StackExchangeRedis" Version="9.0.3" />
         <PackageReference Include="MySqlConnector" Version="2.4.0" />
         <PackageReference Include="NRedisStack" Version="1.0.0-beta1" />
         <PackageReference Include="O9d.AspNet.FluentValidation" Version="0.1.1" />
